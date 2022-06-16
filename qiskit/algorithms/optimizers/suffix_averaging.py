@@ -1,3 +1,4 @@
+from json import load
 import os
 import csv
 import numpy as np
@@ -11,7 +12,8 @@ class SuffixAveragingOptimizer(SciPyOptimizer):
     def __init__(
         self,
         optimizer: SciPyOptimizer,
-        alpha: float = 0.3, 
+        optimizer_name: str, 
+        alpha: float = 0.3,
         suffix_dir: str = None,
         suffix_filename: str = None,
         save_params: bool = False,
@@ -37,11 +39,22 @@ class SuffixAveragingOptimizer(SciPyOptimizer):
         self._suffix_filename = suffix_filename
         self._save_params = save_params
         self._save_averaged_params = save_averaged_params
+        self._optimizer = optimizer
 
         self._circ_params = []
-        def load_params(x):
-            self._circ_params.append(x)
-        super().__init__(method=optimizer._method, options=optimizer._options, callback=load_params)
+
+        if optimizer_name == "SPSA" or "QNSPSA":
+            def load_params(nfev, x_next, fx_next, np.linalg.norm(update), False):
+                self._circ_params.append(x_next)
+        elif optimizer_name == "GradientDescent":
+            def load_params(nfevs, x_next, fun(x_next), stepsize):
+                self._circ_params.append(x_next)
+        else:
+            def load_params(x):
+                self._circ_params.append(x)
+
+        #super().__init__(method=optimizer._method, options=optimizer._options, callback=load_params)
+        self._optimizer.__init__(callback = load_params)
 
     def _save_circ_params(self, circ_params: List[float], csv_dir: str, csv_filename: str) -> None:
         with open(os.path.join(csv_dir, csv_filename+".csv"), mode="a") as csv_file:
@@ -87,7 +100,7 @@ class SuffixAveragingOptimizer(SciPyOptimizer):
         bounds: Optional[List[Tuple[float, float]]] = None,
     ) -> OptimizerResult:
 
-        result = super().minimize(fun, x0, jac=jac, bounds=bounds)
+        result = self._optimizer.minimize(fun, x0, jac=jac, bounds=bounds)
         result.x = self._return_suffix_average()
 
         return result
