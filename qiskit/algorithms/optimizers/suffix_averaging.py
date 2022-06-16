@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, Union, List, Optional, Tuple
 from scipy_optimizer import SciPyOptimizer
 from optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
-class SuffixAveragingOptimizer(ScipyOptimizer):
+class SuffixAveragingOptimizer(SciPyOptimizer):
     def __init__(
         self,
         optimizer: SciPyOptimizer,
