@@ -42,12 +42,15 @@ class SuffixAveragingOptimizer(SciPyOptimizer):
         self._optimizer = optimizer
 
         self._circ_params = []
-
-        if optimizer_name == "SPSA" or "QNSPSA":
-            def load_params(nfev, x_next, fx_next, np.linalg.norm(update), False):
+        
+        if optimizer_name == "SPSA":
+            def load_params(nfev, x_next, fx_next, update_step, bool):
+                self._circ_params.append(x_next)
+        elif optimizer_name == "QNSPSA":
+            def load_params(nfev, x_next, fx_next, update_step, bool):
                 self._circ_params.append(x_next)
         elif optimizer_name == "GradientDescent":
-            def load_params(nfevs, x_next, fun(x_next), stepsize):
+            def load_params(nfevs, x_next, fx_next, stepsize):
                 self._circ_params.append(x_next)
         else:
             def load_params(x):
@@ -102,5 +105,7 @@ class SuffixAveragingOptimizer(SciPyOptimizer):
 
         result = self._optimizer.minimize(fun, x0, jac=jac, bounds=bounds)
         result.x = self._return_suffix_average()
+        print(result.fun)
+        result.fun = fun(np.copy(result.x))
 
         return result
