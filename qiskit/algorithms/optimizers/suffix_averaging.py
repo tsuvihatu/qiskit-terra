@@ -105,7 +105,6 @@ class SuffixAveragingOptimizer(SciPyOptimizer):
 
         result = self._optimizer.minimize(fun, x0, jac=jac, bounds=bounds)
         result.x = self._return_suffix_average()
-        print(result.fun)
         result.fun = fun(np.copy(result.x))
 
         return result
