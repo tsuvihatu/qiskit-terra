@@ -17,7 +17,7 @@ from typing import Optional
 import numpy as np
 from scipy.optimize import OptimizeResult
 
-from .scipy_optimizer import SciPyOptimizer
+from scipy_optimizer import SciPyOptimizer
 
 
 class NFT(SciPyOptimizer):
