@@ -16,14 +16,14 @@ import logging
 import multiprocessing
 import platform
 import sys
-from typing import Optional, List, Tuple, Callable
+from typing import Callable, List, Optional, Tuple
 
 import numpy as np
 
 from qiskit.utils import algorithm_globals
 from qiskit.utils.validation import validate_min
 
-from .optimizer import OptimizerResult, POINT
+from .optimizer import POINT, OptimizerCallback, OptimizerResult
 from .scipy_optimizer import SciPyOptimizer
 
 logger = logging.getLogger(__name__)
@@ -54,6 +54,7 @@ class P_BFGS(SciPyOptimizer):  # pylint: disable=invalid-name
         max_processes: Optional[int] = None,
         options: Optional[dict] = None,
         max_evals_grouped: int = 1,
+        callback: Optional[OptimizerCallback] = None,
         **kwargs,
     ) -> None:
         r"""
@@ -83,6 +84,7 @@ class P_BFGS(SciPyOptimizer):  # pylint: disable=invalid-name
             method="L-BFGS-B",
             options=options,
             max_evals_grouped=max_evals_grouped,
+            callback=callback,
             **kwargs,
         )
         self._max_processes = max_processes
