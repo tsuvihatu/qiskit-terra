@@ -26,30 +26,22 @@ from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
 class ADAM(Optimizer):
     """Adam and AMSGRAD optimizers.
-
     Adam [1] is a gradient-based optimization algorithm that is relies on adaptive estimates of
     lower-order moments. The algorithm requires little memory and is invariant to diagonal
     rescaling of the gradients. Furthermore, it is able to cope with non-stationary objective
     functions and noisy and/or sparse gradients.
-
     AMSGRAD [2] (a variant of Adam) uses a 'long-term memory' of past gradients and, thereby,
     improves convergence properties.
-
     References:
-
         [1]: Kingma, Diederik & Ba, Jimmy (2014), Adam: A Method for Stochastic Optimization.
              `arXiv:1412.6980 <https://arxiv.org/abs/1412.6980>`_
-
         [2]: Sashank J. Reddi and Satyen Kale and Sanjiv Kumar (2018),
              On the Convergence of Adam and Beyond.
              `arXiv:1904.09237 <https://arxiv.org/abs/1904.09237>`_
-
     .. note::
-
         This component has some function that is normally random. If you want to reproduce behavior
         then you should set the random number generator seed in the algorithm_globals
         (``qiskit.utils.algorithm_globals.random_seed = seed``).
-
     """
 
     _OPTIONS = [
@@ -145,12 +137,9 @@ class ADAM(Optimizer):
 
     def save_params(self, snapshot_dir: str) -> None:
         """Save the current iteration parameters to a file called ``adam_params.csv``.
-
         Note:
-
             The current parameters are appended to the file, if it exists already.
             The file is not overwritten.
-
         Args:
             snapshot_dir: The directory to store the file in.
         """
@@ -167,7 +156,6 @@ class ADAM(Optimizer):
 
     def load_params(self, load_dir: str) -> None:
         """Load iteration parameters for a file called ``adam_params.csv``.
-
         Args:
             load_dir: The directory containing ``adam_params.csv``.
         """
@@ -215,7 +203,6 @@ class ADAM(Optimizer):
         # ) -> Tuple[np.ndarray, float, int]:
     ) -> OptimizerResult:  # TODO find proper way to deprecate return type
         """Minimize the scalar function.
-
         Args:
             fun: The scalar function to minimize.
             x0: The initial point for the minimization.
@@ -226,7 +213,6 @@ class ADAM(Optimizer):
             initial_point: DEPRECATED. The initial iteration point.
             gradient_function: DEPRECATED. A function handle to the gradient of the objective
                 function.
-
         Returns:
             The result of the optimization, containing e.g. the result as attribute ``x``.
         """
@@ -282,7 +268,6 @@ class ADAM(Optimizer):
         initial_point: Optional[np.ndarray] = None,
     ) -> Tuple[np.ndarray, float, int]:
         """Perform optimization.
-
         Args:
             num_vars: Number of parameters to be optimized.
             objective_function: Handle to a function that computes the objective function.
@@ -290,13 +275,11 @@ class ADAM(Optimizer):
                 function.
             variable_bounds: deprecated
             initial_point: The initial point for the optimization.
-
         Returns:
             A tuple (point, value, nfev) where\n
                 point: is a 1D numpy.ndarray[float] containing the solution\n
                 value: is a float with the objective function value\n
                 nfev: is the number of objective function calls
-
         """
         super().optimize(
             num_vars, objective_function, gradient_function, variable_bounds, initial_point
