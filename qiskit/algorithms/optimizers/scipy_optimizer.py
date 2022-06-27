@@ -19,7 +19,7 @@ from scipy.optimize import minimize
 
 from qiskit.utils.validation import validate_min
 
-from .optimizer import (
+from optimizer import (
     POINT,
     Optimizer,
     OptimizerCallback,
