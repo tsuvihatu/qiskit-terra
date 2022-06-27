@@ -43,10 +43,10 @@ class SuffixAveragingOptimizer(Optimizer):
         self._circ_params = []
         
         if isinstance(self._optimizer, SPSA):
-            def load_params(nfev, x_next, fx_next, update_step, bool):
+            def load_params(nfev, x_next, fx_next, update_step, is_accepted):
                 self._circ_params.append(x_next)
         elif isinstance(self._optimizer, QNSPSA):
-            def load_params(nfev, x_next, fx_next, update_step, bool):
+            def load_params(nfev, x_next, fx_next, update_step, is_accepted):
                 self._circ_params.append(x_next)
         elif isinstance(self._optimizer, GradientDescent):
             def load_params(nfevs, x_next, fx_next, stepsize):
@@ -55,7 +55,7 @@ class SuffixAveragingOptimizer(Optimizer):
             def load_params(x):
                 self._circ_params.append(x)
 
-        self._optimizer.__init__(callback = load_params)
+        self._optimizer.callback = load_params
 
     def _save_circ_params(self, circ_params: List[float], csv_dir: str, csv_filename: str) -> None:
         with open(os.path.join(csv_dir, csv_filename+".csv"), mode="w") as csv_file:
@@ -73,7 +73,7 @@ class SuffixAveragingOptimizer(Optimizer):
         """Return support level dictionary"""
         return {
             "gradient": OptimizerSupportLevel.supported,
-            "bounds": OptimizerSupportLevel.ignored,
+            "bounds": OptimizerSupportLevel.supported,
             "initial_point": OptimizerSupportLevel.supported,
         }
 

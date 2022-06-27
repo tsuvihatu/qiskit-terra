@@ -12,22 +12,14 @@
 
 """The Adam and AMSGRAD optimizers."""
 
-import csv
+from typing import Any, Optional, Callable, Dict, Tuple, List
 import os
-from typing import Any, Callable, Dict, List, Optional, Tuple
 
+import csv
 import numpy as np
-
 from qiskit.utils import algorithm_globals
 from qiskit.utils.deprecation import deprecate_arguments
-
-from .optimizer import (
-    POINT,
-    Optimizer,
-    OptimizerCallback,
-    OptimizerResult,
-    OptimizerSupportLevel,
-)
+from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
 # pylint: disable=invalid-name
 
@@ -75,7 +67,6 @@ class ADAM(Optimizer):
         eps: float = 1e-10,
         amsgrad: bool = False,
         snapshot_dir: Optional[str] = None,
-        callback: Optional[OptimizerCallback] = None,
     ) -> None:
         """
         Args:
@@ -91,7 +82,7 @@ class ADAM(Optimizer):
             snapshot_dir: If not None save the optimizer's parameter
                 after every step to the given directory
         """
-        super().__init__(callback)
+        super().__init__()
         for k, v in list(locals().items()):
             if k in self._OPTIONS:
                 self._options[k] = v
@@ -255,9 +246,6 @@ class ADAM(Optimizer):
 
             if self._snapshot_dir:
                 self.save_params(self._snapshot_dir)
-
-            if self.callback is not None:
-                self.callback(params_new)
 
             # check termination
             if np.linalg.norm(params - params_new) < self._tol:
