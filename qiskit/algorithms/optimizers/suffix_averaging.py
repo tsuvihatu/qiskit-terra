@@ -42,6 +42,7 @@ class SuffixAveragingOptimizer(Optimizer):
 
         self._circ_params = []
         
+    
         if isinstance(self._optimizer, SPSA):
             def load_params(nfev, x_next, fx_next, update_step, is_accepted):
                 self._circ_params.append(x_next)
@@ -56,6 +57,7 @@ class SuffixAveragingOptimizer(Optimizer):
                 self._circ_params.append(x)
 
         self._optimizer.callback = load_params
+        #self._optimizer.__init__(callback = load_params)
 
     def _save_circ_params(self, circ_params: List[float], csv_dir: str, csv_filename: str) -> None:
         with open(os.path.join(csv_dir, csv_filename+".csv"), mode="w") as csv_file:
@@ -68,7 +70,7 @@ class SuffixAveragingOptimizer(Optimizer):
             reader = csv.reader(csv_file)
             circ_params = [list(map(float, row)) for row in reader]
         return circ_params
-
+    
     def get_support_level(self):
         """Return support level dictionary"""
         return {
@@ -76,7 +78,7 @@ class SuffixAveragingOptimizer(Optimizer):
             "bounds": OptimizerSupportLevel.supported,
             "initial_point": OptimizerSupportLevel.supported,
         }
-
+    
     def _return_suffix_average(self) -> List[float]:
         if self._save_params:
             self._save_circ_params(self._circ_params, self._suffix_dir, self._suffix_filename)
