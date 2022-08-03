@@ -57,16 +57,18 @@ class SuffixAveragingOptimizer(Optimizer):
                 self._circ_params.append(x)
 
         self._optimizer.callback = load_params
-        #self._optimizer.__init__(callback = load_params)
 
     def _save_circ_params(self, circ_params: List[float], csv_dir: str, csv_filename: str) -> None:
-        with open(os.path.join(csv_dir, csv_filename+".csv"), mode="w") as csv_file:
+        directory = csv_dir+"/results"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        with open(os.path.join(directory, csv_filename+".csv"), mode="w") as csv_file:
             writer = csv.writer(csv_file, lineterminator='\n')
             writer.writerows(circ_params)
 
     @staticmethod
     def read_circ_params(csv_dir: str, csv_filename: str) -> List[float]:
-        with open(os.path.join(csv_dir, csv_filename+".csv")) as csv_file:
+        with open(os.path.join(csv_dir, "results", csv_filename+".csv")) as csv_file:
             reader = csv.reader(csv_file)
             circ_params = [list(map(float, row)) for row in reader]
         return circ_params
@@ -78,6 +80,19 @@ class SuffixAveragingOptimizer(Optimizer):
             "bounds": OptimizerSupportLevel.supported,
             "initial_point": OptimizerSupportLevel.supported,
         }
+
+    def return_suffix_average_from_log(self, fun: Callable[[POINT], float], alpha: float, total_iterates: int, csv_dir: str, csv_filename: str) -> float:
+        params_list_temp = self.read_circ_params(csv_dir, csv_filename)
+        params_list = params_list_temp[:total_iterates]
+        n_iterates = len(params_list)
+        averaged_param = np.zeros_like(params_list[0])
+        for j in range(int(np.ceil(n_iterates*alpha))):
+            averaged_param += params_list[n_iterates-j-1]
+        averaged_param /= np.ceil(n_iterates*alpha)
+
+        cost_func = fun(np.copy(averaged_param))
+
+        return cost_func
     
     def _return_suffix_average(self) -> List[float]:
         if self._save_params:
@@ -122,7 +137,7 @@ class SuffixAveragingOptimizer(Optimizer):
     ) -> OptimizerResult:
 
         result = self._optimizer.minimize(fun, x0, jac=jac, bounds=bounds)
-        result.x = self._return_suffix_average()
-        result.fun = fun(np.copy(result.x))
+        result.x_suff = self._return_suffix_average()
+        result.fun_suff = fun(np.copy(result.x_suff))
 
         return result

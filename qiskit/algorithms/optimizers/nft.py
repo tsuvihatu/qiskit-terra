@@ -17,7 +17,6 @@ from typing import Optional
 import numpy as np
 from scipy.optimize import OptimizeResult
 
-from .optimizer import OptimizerCallback
 from .scipy_optimizer import SciPyOptimizer
 
 
@@ -38,7 +37,6 @@ class NFT(SciPyOptimizer):
         disp: bool = False,
         reset_interval: int = 32,
         options: Optional[dict] = None,
-        callback: Optional[OptimizerCallback] = None,
         **kwargs,
     ) -> None:
         """
@@ -68,7 +66,7 @@ class NFT(SciPyOptimizer):
         for k, v in list(locals().items()):
             if k in self._OPTIONS:
                 options[k] = v
-        super().__init__(method=nakanishi_fujii_todo, options=options, callback=callback, **kwargs)
+        super().__init__(method=nakanishi_fujii_todo, options=options, **kwargs)
 
 
 # pylint: disable=invalid-name
