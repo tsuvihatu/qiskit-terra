@@ -20,13 +20,7 @@ import numpy as np
 
 from qiskit.utils.deprecation import deprecate_arguments
 
-from .optimizer import (
-    POINT,
-    Optimizer,
-    OptimizerCallback,
-    OptimizerResult,
-    OptimizerSupportLevel,
-)
+from .optimizer import POINT, Optimizer, OptimizerCallback, OptimizerResult, OptimizerSupportLevel
 
 # pylint: disable=invalid-name
 
@@ -74,7 +68,7 @@ class ADAM(Optimizer):
         eps: float = 1e-10,
         amsgrad: bool = False,
         snapshot_dir: Optional[str] = None,
-        callback: Optional[OptimizerCallback] = None
+        callback: Optional[OptimizerCallback] = None,
     ) -> None:
         """
         Args:

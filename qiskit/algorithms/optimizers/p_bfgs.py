@@ -74,7 +74,6 @@ class P_BFGS(SciPyOptimizer):  # pylint: disable=invalid-name
         """
         if max_processes:
             validate_min("max_processes", max_processes, 1)
-
         if options is None:
             options = {}
         for k, v in list(locals().items()):
